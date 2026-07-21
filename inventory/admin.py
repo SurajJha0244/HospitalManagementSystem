@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Supplier,Product,StockIn
+from .models import Supplier,Product,StockIn,StockOut
 # Register your models here.
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
@@ -35,3 +35,23 @@ class StockInAdmin(admin.ModelAdmin):
         
 
     ]    
+
+@admin.register(StockOut)
+class StockOutAdmin(admin.ModelAdmin):
+    list_display=[       
+        "product",
+        "quantity",
+        "reason",
+        "created_by",
+        "date",
+          ] 
+    search_fields=[
+        "product__name",
+        "reason",
+
+    ]   
+
+    list_filter=[
+        "reason",
+        "date",
+    ]

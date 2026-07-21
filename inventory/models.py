@@ -2,6 +2,8 @@ from django.db import models
 from organizations.models import Organization
 from django.conf import settings
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 
 
@@ -92,4 +94,36 @@ class StockIn(models.Model):
 
       def __str__(self):
          return f"{self.product.name} - {self.quantity}"      
+      
 
+class StockOut(models.Model):
+   REASON_CHOICES=(
+      ("SALE","Sale"),
+      ("DAMAGED","Damaged"),
+      ("Expired","Expired"),
+      ("RETURNED","Returned"),
+      ("OTHER","Other")
+   )
+   organization=models.ForeignKey(Organization,on_delete=models.CASCADE,related_name="stock_outs")
+   product=models.ForeignKey(Product,on_delete=models.CASCADE)
+   quantity=models.PositiveIntegerField()
+   reason=models.CharField(max_length=20,choices=REASON_CHOICES)
+   remarks=models.TextField(blank=True,null=True)
+   created_by=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,null=True)
+   date=models.DateTimeField(default=timezone.now)
+   created_at=models.DateTimeField(auto_now_add=True)
+
+   def save(self,*args,**kwargs):
+      
+      if not self.pk:
+         
+         if self.qunatity>self.product.stock:
+            raise ValidationError("Insufficent stock available.")
+         
+         self.product.stock-=self.qunatity
+         self.product.save()
+      super().save(*args,**kwargs)
+
+   def __str__(self):
+      return  f"{self.product.name} ({self.quantity})"
+      

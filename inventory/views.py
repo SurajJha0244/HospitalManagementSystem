@@ -2,8 +2,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .models import Supplier,Product,StockIn
-from .serializers import SupplierSerializer,ProductSerializer,StockInSerailizer
+from .models import Supplier,Product,StockIn,StockOut
+from .serializers import SupplierSerializer,ProductSerializer,StockInSerailizer,StockOutSeralizer
+from django.core.exceptions import ValidationError
+
+from .serializers import StockSerializer
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
@@ -150,3 +154,53 @@ class StockInDetailAPIView(APIView):
         stockin.delete()
 
         return Response({"message":"Stock entry deleted"})
+    
+
+class StockOutListCreateAPIView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self,request):
+        queryset=StockOut.objects.filter(organization=request.user.organization).order_by("-date")
+        serializer=StockOutSeralizer(queryset,many=True)
+        return Response(serializer.data)
+    
+    def post(self,request):
+        serializer=StockOutSeralizer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(organization=request.user.organization,created_by=request.user)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=400)
+
+
+class StockOutDetailAPIView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get_object(self,request,id):
+        return get_object_or_404(StockOut,id=id,organization=request.user.organization)
+    
+    def get(self,request,id):
+        stock_out=self.get_objeect(request.id)
+        serializer=StockOutSeralizer(stock_out)
+        return Response(serializer.data)
+    
+    def delete(self,request,id):
+        stock_out=self.get_object(request,id)
+        stock_out.delete()
+
+        return Response({
+            "message":"Stock out record deleted sucessfully"
+        })
+    
+class ViewStockAPIView(APIView):
+
+    permission_classes=[
+        IsAuthenticated
+    ]
+
+    def get(self,request):
+        product=Product.objects.filter(organization=request.user.organization)
+        serializer=StockSerializer(product,many=True)
+        return Response(serializer.data)
+    
+    

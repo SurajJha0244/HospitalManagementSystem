@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Supplier,Product,StockIn
+from .models import Supplier,Product,StockIn,StockOut
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
@@ -100,4 +100,46 @@ class  StockInSerailizer(serializers.ModelSerializer):
              "created_by",
              "created_at",
              "date"
+        ]
+
+class  StockOutSeralizer(serializers.ModelSerializer):      
+
+    product_name=serializers.CharField(source="product.name",read_only=True)
+    class Meta:
+        model=StockOut
+        fields=[
+            "id",
+            "product",
+            "product_name",
+            "quantity",
+            "reason",
+            "remarks",
+            "created_by",
+            "date",
+            "created_at",
+
+        ]
+        read_only_fields=(
+            "created_by",
+            "date",
+            "created_at",
+        )
+
+class StockSerializer(serializers.ModelSerializer):
+    supplier_name=serializers.CharField(source="supplier.name",read_only=True)
+
+    class Meta:
+        model=Product
+        fields=[
+            "id",
+            "product_code",
+            "name",
+            "category",
+            "supplier_name",
+            "selling_price",
+            "stock",
+            "minimum_stock",
+            "expiry_date"
+
+
         ]
