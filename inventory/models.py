@@ -49,6 +49,7 @@ class Product(models.Model):
   organization=models.ForeignKey(Organization,on_delete=models.CASCADE,related_name="products")
   supplier=models.ForeignKey(Supplier,on_delete=models.CASCADE)
   product_code=models.CharField(max_length=50)
+  barcode = models.CharField(max_length=50,unique=True,db_index=True,null=True,blank=True,help_text="Barcode used for POS scanning")
   name=models.CharField(max_length=150)
   generic_name=models.CharField(max_length=150,blank=True,null=True)
   category=models.CharField(max_length=50,choices=CATEGORY_CHOICES)

@@ -111,6 +111,7 @@ class  StockOutSeralizer(serializers.ModelSerializer):
             "id",
             "product",
             "product_name",
+            "barcode"
             "quantity",
             "reason",
             "remarks",
@@ -133,6 +134,7 @@ class StockSerializer(serializers.ModelSerializer):
         fields=[
             "id",
             "product_code",
+            "barcode"
             "name",
             "category",
             "supplier_name",
