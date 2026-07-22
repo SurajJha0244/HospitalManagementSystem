@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounts',
     'organizations',
     'inventory',
+    'sales',
     
 ]
 
@@ -87,7 +88,7 @@ DATABASES = {
 
         'USER': 'root',
 
-        'PASSWORD': '1234',
+        'PASSWORD': '',
 
         'HOST': 'localhost',
 
