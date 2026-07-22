@@ -9,7 +9,7 @@ class Customer(models.Model):
 
     organization = models.ForeignKey(Organization,on_delete=models.CASCADE,related_name="customers")
     name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20,blank=True,null=True)
+    phone = models.CharField(max_length=20,blank=True,null=True,db_index=True)
     address = models.TextField(blank=True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
