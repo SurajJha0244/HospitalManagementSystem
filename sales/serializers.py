@@ -71,28 +71,3 @@ class CreateSaleSerializer(serializers.Serializer):
 
 
    
-   
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-   class Meta:
-      
-        model = Sale
-
-        fields = [
-
-        ]
