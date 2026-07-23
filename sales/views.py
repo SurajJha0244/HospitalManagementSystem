@@ -21,7 +21,7 @@ def generate_invoice_number():
     else:
         number=1
 
-        return f"INV-{number:06d}"
+    return f"INV-{number:06d}"
 # Create your views here.
 class ProductBarcodeAPIView(APIView):
     def get(self,request,barcode):

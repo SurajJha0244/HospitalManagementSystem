@@ -6,6 +6,7 @@ from organizations.models import Organization
 from inventory.models import Product
 
 
+
 class Customer(models.Model):
 
     organization = models.ForeignKey(Organization,on_delete=models.CASCADE,related_name="customers")
@@ -36,7 +37,9 @@ class Sale(models.Model):
     PAYMENT_CHOICES = (
         ("CASH", "Cash"),
         ("CARD", "Card"),
-        ("ONLINE", "Online"),
+        ("FONEPAY", "FonePay"),
+        ("ESEWA","Esewa"),
+        ("BANK TRANSFER","Bank Transfer"),
     )
 
 
