@@ -3,6 +3,7 @@ from .models import Supplier,Product,StockIn,StockOut
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
+        model=Supplier
         fields=[
             "id",
             "supplier_code",
@@ -96,7 +97,7 @@ class  StockInSerailizer(serializers.ModelSerializer):
             "created_at"
 
         ]    
-        read_only_filed=[
+        read_only_fileds=[
              "created_by",
              "created_at",
              "date"
@@ -111,7 +112,7 @@ class  StockOutSeralizer(serializers.ModelSerializer):
             "id",
             "product",
             "product_name",
-            "barcode"
+            "barcode",
             "quantity",
             "reason",
             "remarks",
@@ -134,7 +135,7 @@ class StockSerializer(serializers.ModelSerializer):
         fields=[
             "id",
             "product_code",
-            "barcode"
+            "barcode",
             "name",
             "category",
             "supplier_name",

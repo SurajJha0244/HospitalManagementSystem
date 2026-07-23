@@ -118,10 +118,10 @@ class StockOut(models.Model):
       
       if not self.pk:
          
-         if self.qunatity>self.product.stock:
+         if self.quantity>self.product.stock:
             raise ValidationError("Insufficent stock available.")
          
-         self.product.stock-=self.qunatity
+         self.product.stock-=self.quantity
          self.product.save()
       super().save(*args,**kwargs)
 

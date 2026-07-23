@@ -112,7 +112,7 @@ class ProductDetailAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         
-        return Response(serializer.error,status=400)
+        return Response(serializer.errors,status=400)
     
     def delete(self,request,id):
         product=self.get_object(request,id)
@@ -133,7 +133,7 @@ class StockInListCreateAPIView(APIView):
         return Response(serializer.data)
     
     def post(self,request):
-        serializer=StockInListCreateAPIView(data=request.data)
+        serializer=StockInSerailizer(data=request.data)
         if serializer.is_valid():
             serializer.save(organization=request.user.organization,created_by=request.user)
             return Response(serializer.data,status=201)

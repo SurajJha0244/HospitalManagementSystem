@@ -25,4 +25,4 @@ class IsSuperAdmin(BasePermission):
     
 class IsSuperAdminOrOrganizationAdmin(BasePermission):
     def has_permission(self, request, view):
-        return (request.user.is_authenicated and request.user.role in [User.Role.SUPER_ADMIN,User.Role.ORGANIZATION_ADMIN] )   
+        return (request.user.is_authenticated and request.user.role in [User.Role.SUPER_ADMIN,User.Role.ORGANIZATION_ADMIN] )   
