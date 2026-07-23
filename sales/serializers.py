@@ -68,32 +68,3 @@ class CreateSaleSerializer(serializers.Serializer):
    Items=CreateSaleItemSerializer(
     many=True
    )
-
-
-   
-   
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-   class Meta:
-      
-        model = Sale
-
-        fields = [
-
-        ]
->>>>>>> origin/main
