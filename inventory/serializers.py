@@ -19,12 +19,13 @@ class SupplierSerializer(serializers.ModelSerializer):
         read_only_fields=["created_at","updated_at"]
 
 class ProductSerializer(serializers.ModelSerializer):
+    supplier = serializers.SlugRelatedField(queryset=Supplier.objects.all(),slug_field="name"
     supplier_name=serializers.CharField(source="supplier.name",read_only=True)
-
+    )
     class Meta:
         model=Product
         fields=[
-                        "id",
+             "id",
 
             "product_code",
 
@@ -45,6 +46,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "stock",
 
             "minimum_stock",
+
+            "barcode"
 
             "batch_number",
 
@@ -74,8 +77,8 @@ class  StockInSerializer(serializers.ModelSerializer):
         fields=[
             "id",
 
-            "product",
-
+            
+          
             "product_name",
 
             "supplier",
@@ -92,7 +95,7 @@ class  StockInSerializer(serializers.ModelSerializer):
 
             "created_by",
 
-            "date",
+            
 
             "created_at"
 

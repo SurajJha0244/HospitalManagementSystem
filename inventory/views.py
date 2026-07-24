@@ -180,7 +180,7 @@ class StockOutDetailAPIView(APIView):
         return get_object_or_404(StockOut,id=id,organization=request.user.organization)
     
     def get(self,request,id):
-        stock_out=self.get_objeect(request.id)
+        stock_out=self.get_object(request.id)
         serializer=StockOutSerializer(stock_out)
         return Response(serializer.data)
     
