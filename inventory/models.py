@@ -93,6 +93,21 @@ class StockIn(models.Model):
             self.product.save()
          super().save(*args,**kwargs)
 
+      def delete(self, *args, **kwargs):
+
+        # Reverse the stock increase
+        self.product.stock -= self.quantity
+
+        # Prevent negative stock
+        if self.product.stock < 0:
+            self.product.stock = 0
+
+        self.product.save()
+
+        # Delete the Stock In record
+        super().delete(*args, **kwargs)
+  
+
       def __str__(self):
          return f"{self.product.name} - {self.quantity}"      
       
@@ -124,6 +139,16 @@ class StockOut(models.Model):
          self.product.stock-=self.quantity
          self.product.save()
       super().save(*args,**kwargs)
+
+
+   def delete(self, *args, **kwargs):
+
+    # Restore stock
+    self.product.stock += self.quantity
+    self.product.save()
+
+    # Delete Stock Out record
+    super().delete(*args, **kwargs)  
 
    def __str__(self):
       return  f"{self.product.name} ({self.quantity})"

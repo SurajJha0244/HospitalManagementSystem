@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Supplier,Product,StockIn,StockOut
-from .serializers import SupplierSerializer,ProductSerializer,StockInSerailizer,StockOutSeralizer
+from .serializers import SupplierSerializer,ProductSerializer,StockInSerializer,StockOutSerializer
 from django.core.exceptions import ValidationError
 
 from .serializers import StockSerializer
@@ -128,12 +128,12 @@ class StockInListCreateAPIView(APIView):
 
     def get(self,request):
         stockins=StockIn.objects.filter(organization=request.user.organization)
-        serializer=StockInSerailizer(stockins,many=True)
+        serializer=StockInSerializer(stockins,many=True)
 
         return Response(serializer.data)
     
     def post(self,request):
-        serializer=StockInSerailizer(data=request.data)
+        serializer=StockInSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(organization=request.user.organization,created_by=request.user)
             return Response(serializer.data,status=201)
@@ -147,30 +147,30 @@ class StockInDetailAPIView(APIView):
 
     def get(self,request,id):
         stockin=get_object_or_404(StockIn,id=id,organization=request.user.organization)
-        serializer=StockInSerailizer(stockin)
+        serializer=StockInSerializer(stockin)
         return Response(serializer.data)
-    def delete(self,request,id):
-        stockin=get_object_or_404(StockIn,id=id, organization=request.user.organization)
-        stockin.delete()
 
-        return Response({"message":"Stock entry deleted"})
-    
 
 class StockOutListCreateAPIView(APIView):
     permission_classes=[IsAuthenticated]
 
     def get(self,request):
         queryset=StockOut.objects.filter(organization=request.user.organization).order_by("-date")
-        serializer=StockOutSeralizer(queryset,many=True)
+        serializer=StockOutSerializer(queryset,many=True)
         return Response(serializer.data)
     
     def post(self,request):
-        serializer=StockOutSeralizer(data=request.data)
+        serializer=StockOutSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save(organization=request.user.organization,created_by=request.user)
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=400)
+
+    
+
+
+
 
 
 class StockOutDetailAPIView(APIView):
@@ -181,17 +181,10 @@ class StockOutDetailAPIView(APIView):
     
     def get(self,request,id):
         stock_out=self.get_objeect(request.id)
-        serializer=StockOutSeralizer(stock_out)
+        serializer=StockOutSerializer(stock_out)
         return Response(serializer.data)
     
-    def delete(self,request,id):
-        stock_out=self.get_object(request,id)
-        stock_out.delete()
-
-        return Response({
-            "message":"Stock out record deleted sucessfully"
-        })
-    
+   
 class ViewStockAPIView(APIView):
 
     permission_classes=[

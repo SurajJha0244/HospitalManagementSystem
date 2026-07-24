@@ -65,7 +65,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "updated_at"
         ]
 
-class  StockInSerailizer(serializers.ModelSerializer):
+class  StockInSerializer(serializers.ModelSerializer):
     product_name=serializers.CharField(source="product.name",read_only=True)
     supplier_name=serializers.CharField(source="supplier.name",read_only=True)
 
@@ -97,13 +97,13 @@ class  StockInSerailizer(serializers.ModelSerializer):
             "created_at"
 
         ]    
-        read_only_fileds=[
+        read_only_fields=[
              "created_by",
              "created_at",
              "date"
         ]
 
-class  StockOutSeralizer(serializers.ModelSerializer):      
+class  StockOutSerializer(serializers.ModelSerializer):      
 
     product_name=serializers.CharField(source="product.name",read_only=True)
     class Meta:
