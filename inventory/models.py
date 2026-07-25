@@ -55,8 +55,8 @@ class Product(models.Model):
   category=models.CharField(max_length=50,choices=CATEGORY_CHOICES)
   purchase_price=models.DecimalField(max_digits=10,decimal_places=2)
   selling_price=models.DecimalField(max_digits=10,decimal_places=2)
-  stock=models.IntegerField(default=0)
-  minimum_stock=models.IntegerField(default=10)
+  stock=models.PositiveIntegerField(default=0)
+  minimum_stock=models.PositiveIntegerField(default=20)
   batch_number=models.CharField(max_length=100)
   expiry_date=models.DateField()
   manufacturer=models.CharField(max_length=150,blank=True,null=True)
@@ -129,16 +129,25 @@ class StockOut(models.Model):
    date=models.DateTimeField(default=timezone.now)
    created_at=models.DateTimeField(auto_now_add=True)
 
-   def save(self,*args,**kwargs):
-      
-      if not self.pk:
-         
-         if self.quantity>self.product.stock:
-            raise ValidationError("Insufficent stock available.")
-         
-         self.product.stock-=self.quantity
-         self.product.save()
-      super().save(*args,**kwargs)
+   def save(self, *args, **kwargs):
+
+    if not self.pk:
+
+        product = Product.objects.get(
+            id=self.product.id
+        )
+
+        if self.quantity > product.stock:
+            raise ValidationError(
+                "Insufficient stock available."
+            )
+
+        product.stock -= self.quantity
+
+        product.save()
+
+
+    super().save(*args, **kwargs)
 
 
    def delete(self, *args, **kwargs):
