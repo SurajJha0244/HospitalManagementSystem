@@ -3,9 +3,8 @@ from organizations.models import Organization
 from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-
-
-
+import random
+import uuid
 
 # Create your models here.
 class Supplier(models.Model):
@@ -31,6 +30,9 @@ class Supplier(models.Model):
     ]
   def __str__(self):
      return self.name
+
+
+  
   
 class Product(models.Model):  
   CATEGORY_CHOICES=(
@@ -63,6 +65,19 @@ class Product(models.Model):
   status=models.CharField(max_length=20,choices=STATUS_CHOICES,default="ACTIVE")
   created_at=models.DateTimeField(auto_now_add=True)
   updated_at=models.DateTimeField(auto_now=True)
+
+  def generate_barcode():
+   while True:
+      barcode = str(uuid.uuid4().int)[:13]
+
+      if not Product.objects.filter(barcode=barcode).exists():
+         return barcode
+
+  def save(self,*args,**kwargs):
+     if not self.barcode:
+        self.barcode=self.generate_barcode()
+
+     super().save(*args,**kwargs)       
 
   class Meta:
 

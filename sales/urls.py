@@ -6,5 +6,5 @@ urlpatterns = [
     path("",SaleListAPIView.as_view(),name="sale-list"),
     path("<int:id>/",SaleDetailAPIView.as_view(),name="sale-detail"),
     path("product/barcode/<str:barcode>/",ProductBarcodeAPIView.as_view(),name="barcode-product"),
-
+    path("products/barcode/<str:barcode>/",ProductBarcodeAPIView.as_view(),name="product-barcode"),
 ]

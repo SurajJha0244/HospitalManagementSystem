@@ -8,6 +8,8 @@ from rest_framework import status
 from .models import (Customer,Sale,SaleItem)
 from .serializers import (SaleSerializer,CreateSaleSerializer)
 from inventory.models import Product
+from inventory.serializers import ProductBarcodeSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -146,3 +148,14 @@ class SaleDetailAPIView(APIView):
         serializer=SaleSerializer(sale)
 
         return Response(serializer.data)
+
+class ProductBarcodeAPIView(APIView):
+    permission_classes=[
+        IsAuthenticated
+    ]   
+
+    def get(self,request,barcode):
+        product=get_object_or_404(Product,barcode=barcode,organization=request.user.organization)
+        serializer=ProductBarcodeSerializer(product)
+
+        return Response(serializer.data) 
