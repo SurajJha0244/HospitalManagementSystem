@@ -2,6 +2,8 @@ from django.db import models
 from organizations.models import Organization
 from django.conf import settings
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 
 
@@ -47,13 +49,14 @@ class Product(models.Model):
   organization=models.ForeignKey(Organization,on_delete=models.CASCADE,related_name="products")
   supplier=models.ForeignKey(Supplier,on_delete=models.CASCADE)
   product_code=models.CharField(max_length=50)
+  barcode = models.CharField(max_length=50,unique=True,db_index=True,null=True,blank=True,help_text="Barcode used for POS scanning")
   name=models.CharField(max_length=150)
   generic_name=models.CharField(max_length=150,blank=True,null=True)
   category=models.CharField(max_length=50,choices=CATEGORY_CHOICES)
   purchase_price=models.DecimalField(max_digits=10,decimal_places=2)
   selling_price=models.DecimalField(max_digits=10,decimal_places=2)
-  stock=models.IntegerField(default=0)
-  minimum_stock=models.IntegerField(default=10)
+  stock=models.PositiveIntegerField(default=0)
+  minimum_stock=models.PositiveIntegerField(default=20)
   batch_number=models.CharField(max_length=100)
   expiry_date=models.DateField()
   manufacturer=models.CharField(max_length=150,blank=True,null=True)
@@ -90,6 +93,72 @@ class StockIn(models.Model):
             self.product.save()
          super().save(*args,**kwargs)
 
+      def delete(self, *args, **kwargs):
+
+        # Reverse the stock increase
+        self.product.stock -= self.quantity
+
+        # Prevent negative stock
+        if self.product.stock < 0:
+            self.product.stock = 0
+
+        self.product.save()
+
+        # Delete the Stock In record
+        super().delete(*args, **kwargs)
+  
+
       def __str__(self):
          return f"{self.product.name} - {self.quantity}"      
+      
 
+class StockOut(models.Model):
+   REASON_CHOICES=(
+      ("SALE","Sale"),
+      ("DAMAGED","Damaged"),
+      ("Expired","Expired"),
+      ("RETURNED","Returned"),
+      ("OTHER","Other")
+   )
+   organization=models.ForeignKey(Organization,on_delete=models.CASCADE,related_name="stock_outs")
+   product=models.ForeignKey(Product,on_delete=models.CASCADE)
+   quantity=models.PositiveIntegerField()
+   reason=models.CharField(max_length=20,choices=REASON_CHOICES)
+   remarks=models.TextField(blank=True,null=True)
+   created_by=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,null=True)
+   date=models.DateTimeField(default=timezone.now)
+   created_at=models.DateTimeField(auto_now_add=True)
+
+   def save(self, *args, **kwargs):
+
+    if not self.pk:
+
+        product = Product.objects.get(
+            id=self.product.id
+        )
+
+        if self.quantity > product.stock:
+            raise ValidationError(
+                "Insufficient stock available."
+            )
+
+        product.stock -= self.quantity
+
+        product.save()
+
+
+    super().save(*args, **kwargs)
+
+
+   def delete(self, *args, **kwargs):
+
+    # Restore stock
+    self.product.stock += self.quantity
+    self.product.save()
+
+    # Delete Stock Out record
+    super().delete(*args, **kwargs)  
+
+   def __str__(self):
+      return  f"{self.product.name} ({self.quantity})"
+      

@@ -16,5 +16,20 @@ class User(AbstractUser):
 
     phone=models.CharField(max_length=20,blank=True,null=True)
 
+
+
+    def save(self, *args, **kwargs):
+
+        if self.role != self.Role.SUPER_ADMIN and not self.organization:
+
+            raise ValueError(
+                "Only Super Admin can have no organization"
+            )
+
+        super().save(*args, **kwargs)
+        
+
+
     def __str__(self):
         return f"{self.username}{self.role}"  
+    

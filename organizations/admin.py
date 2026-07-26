@@ -2,7 +2,19 @@ from django.contrib import admin
 from .models import Organization
 
 
-# Register your models here.
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
-    list_display=["name","address","phone","is_active","created_at"]
+
+    list_display = [
+        "name",
+        "organization_id",
+        "phone",
+        "email",
+        "is_active",
+        "created_at"
+    ]
+
+    search_fields = [
+        "name",
+        "organization_id"
+    ]
