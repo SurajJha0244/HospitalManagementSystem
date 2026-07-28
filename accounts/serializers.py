@@ -47,7 +47,7 @@ class LoginSerializer(serializers.Serializer):
         return data
     
 class UserSerializer(serializers.ModelSerializer):
-    organization_name=serializers.CharField(source="organization.name",read_only=True)
+    organization_name=serializers.SerializerMethodField()
 
     class Meta:
         model=User
@@ -60,7 +60,7 @@ class UserSerializer(serializers.ModelSerializer):
             "organization_name"
         ]
 
-    def get__organization_name(self,obj):
+    def get_organization_name(self,obj):
 
         if obj.organization:
             return obj.organization.name
@@ -82,9 +82,24 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "organization"
         ]  
     def create (self,validated_data):
-            validated_data["password"]=make_password(validated_data["password"])
+            user = User.objects.create_user(
 
-            return User.objects.create(**validated_data)
+            username=validated_data["username"],
+
+            email=validated_data.get("email"),
+
+            password=validated_data["password"],
+
+            phone=validated_data.get("phone"),
+
+            role=validated_data.get(
+                "role",
+                User.Role.STAFF
+            )
+
+        )
+
+            return user
     
 class OrganizationAdminSerializer(serializers.ModelSerializer):
         password=serializers.CharField(write_only=True)
@@ -111,6 +126,7 @@ class StaffUserSerializer(serializers.ModelSerializer):
                "phone",
                "role"
           ]
+          
 
 class UserProfileSerializer(serializers.ModelSerializer):
 
@@ -127,3 +143,25 @@ class UserProfileSerializer(serializers.ModelSerializer):
         "role",
         "organization",
        ]
+          def create(self,validated_data):
+
+                    return User.objects.create_user(**validated_data)
+
+          read_only_fields=("role")
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+     old_password=serializers.CharField(write_only=True)
+     new_password=serializers.CharField(write_only=True)
+     confirm_password=serializers.CharField(write_only=True)
+
+     def validate(self,attrs):
+
+          if attrs["new_password"]!=attrs["confirm_password"]:
+               raise serializers.ValidationError(
+                    {
+                         "confirm_password":"Password do not match."
+                    }
+               )
+          return attrs
+

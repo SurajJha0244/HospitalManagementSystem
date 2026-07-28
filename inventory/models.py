@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 import random
 import uuid
+from datetime import datetime
 
 # Create your models here.
 class Supplier(models.Model):
@@ -49,17 +50,14 @@ class Product(models.Model):
     ("INACTIVE","Inactive"),
   )
   organization=models.ForeignKey(Organization,on_delete=models.CASCADE,related_name="products")
-  supplier=models.ForeignKey(Supplier,on_delete=models.CASCADE)
   product_code=models.CharField(max_length=50)
   barcode = models.CharField(max_length=50,unique=True,db_index=True,null=True,blank=True,help_text="Barcode used for POS scanning")
   name=models.CharField(max_length=150)
   generic_name=models.CharField(max_length=150,blank=True,null=True)
   category=models.CharField(max_length=50,choices=CATEGORY_CHOICES)
-  purchase_price=models.DecimalField(max_digits=10,decimal_places=2)
   selling_price=models.DecimalField(max_digits=10,decimal_places=2)
   stock=models.PositiveIntegerField(default=0)
   minimum_stock=models.PositiveIntegerField(default=20)
-  batch_number=models.CharField(max_length=100)
   expiry_date=models.DateField()
   manufacturer=models.CharField(max_length=150,blank=True,null=True)
   status=models.CharField(max_length=20,choices=STATUS_CHOICES,default="ACTIVE")
@@ -95,8 +93,8 @@ class StockIn(models.Model):
       supplier = models.ForeignKey(Supplier,on_delete=models.CASCADE,related_name="stock_ins")
       quantity=models.PositiveIntegerField()
       purchase_price=models.DecimalField(max_digits=10,decimal_places=2)
-      batch_number=models.CharField(max_length=100)
-      expiry_date=models.DateField()
+      batch_number=models.CharField(max_length=100,unique=True,blank=True,null=True)
+      expiry_date=models.DateField(null=True,blank=True)
       created_by=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,null=True)
       date=models.DateTimeField(default=timezone.now)
       created_at=models.DateTimeField(auto_now_add=True)
@@ -107,6 +105,20 @@ class StockIn(models.Model):
 
             self.product.save()
          super().save(*args,**kwargs)
+
+      def save(self,*args,**kwargs):
+
+         if not self.batch_number:
+            date = datetime.now().strftime("%Y%m%d")
+            random_number=random.randint(1000,9999)
+
+            self.batch_number=(
+               f"BATCH -{date}-(random_number)"
+
+            )
+         super().save(*args,**kwargs)
+
+
 
       def delete(self, *args, **kwargs):
 

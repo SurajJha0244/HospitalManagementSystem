@@ -3,6 +3,7 @@ from .views import ( LoginAPIView,ProfileAPIView,LogoutAPIView)
 from rest_framework_simplejwt.views import(TokenRefreshView)
 from .views import (CreateOrganizationAdminAPIView,CreateStaffAPIView)
 from .views import (OrganizationUserListAPIView,OrganizationUserDetailAPIView,UserProfileAPIView)
+from .views import (OrganizationUserListAPIView,OrganizationUserDetailAPIView,ChangePasswordAPIView)
 
 urlpatterns = [ 
     path("login/",LoginAPIView.as_view(),name="login"),
@@ -14,4 +15,6 @@ urlpatterns = [
     path("users/",OrganizationUserListAPIView.as_view(),name="organization-users"),
     path("users/<int:id>/", OrganizationUserDetailAPIView.as_view(),name="organization-user-detail"),
     path("profile/", UserProfileAPIView.as_view(),name="user-profile"),
+    path("change-password/",ChangePasswordAPIView.as_view(),name="change-password"),
+
 ]
