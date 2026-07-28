@@ -57,4 +57,79 @@ class IsSuperAdminOrOrganizationAdmin(BasePermission):
 
             ]
 
+<<<<<<< HEAD
+=======
+        )
+
+# Only Pharmacist
+class IsPharmacist(BasePermission):
+
+    def has_permission(self, request, view):
+
+        return (
+
+            request.user.is_authenticated
+
+            and
+
+            request.user.role == User.Role.PHARMACIST
+
+        )
+
+
+
+# Only Cashier
+class IsCashier(BasePermission):
+
+    def has_permission(self, request, view):
+
+        return (
+
+            request.user.is_authenticated
+
+            and
+
+            request.user.role == User.Role.CASHIER
+
+        )
+
+
+
+# Only Staff
+class IsStaff(BasePermission):
+
+    def has_permission(self, request, view):
+
+        return (
+
+            request.user.is_authenticated
+
+            and
+
+            request.user.role == User.Role.STAFF
+
+        )
+
+
+
+# Users who can manage other users
+class CanManageUsers(BasePermission):
+
+    def has_permission(self, request, view):
+
+        return (
+
+            request.user.is_authenticated
+
+            and
+
+            request.user.role in [
+
+                User.Role.SUPER_ADMIN,
+
+                User.Role.ORGANIZATION_ADMIN
+
+            ]
+
+>>>>>>> 34afa3d9007df5222a391197710bff38719b08a4
         )
