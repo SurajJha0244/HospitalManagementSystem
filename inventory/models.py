@@ -98,25 +98,29 @@ class StockIn(models.Model):
       created_by=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.SET_NULL,null=True)
       date=models.DateTimeField(default=timezone.now)
       created_at=models.DateTimeField(auto_now_add=True)
-      def save(self,*args,**kwargs):
-         #check new stock entry only
-         if not  self.pk:
-            self.product.stock+=self.quantity
+      def save(self, *args, **kwargs):
 
-            self.product.save()
-         super().save(*args,**kwargs)
+        # Generate batch number automatically
+        if not self.batch_number:
 
-      def save(self,*args,**kwargs):
-
-         if not self.batch_number:
             date = datetime.now().strftime("%Y%m%d")
-            random_number=random.randint(1000,9999)
 
-            self.batch_number=(
-               f"BATCH -{date}-(random_number)"
+            random_number = random.randint(1000,9999)
 
+            self.batch_number = (
+                f"BATCH-{date}-{random_number}"
             )
-         super().save(*args,**kwargs)
+
+
+        # Increase stock only when creating new StockIn
+        if not self.pk:
+
+            self.product.stock += self.quantity
+            self.product.save()
+
+
+        super().save(*args, **kwargs)
+
 
 
 

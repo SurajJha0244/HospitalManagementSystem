@@ -41,11 +41,7 @@ class SaleItemSerializer(serializers.Serializer):
             "product_code",
 
             "product_name",
-
-            "batch_number",
-
-            "expiry_date",
-
+    
             "quantity",
 
             "unit_price",

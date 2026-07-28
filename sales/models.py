@@ -74,8 +74,7 @@ class SaleItem(models.Model):
     barcode = models.CharField(max_length=50)
     product_code = models.CharField(max_length=30)
     product_name = models.CharField(max_length=200)
-    batch_number = models.CharField(max_length=100)
-    expiry_date = models.DateField()
+    
 
     quantity = models.PositiveIntegerField()
     unit_price = models.DecimalField(max_digits=10,decimal_places=2)

@@ -88,8 +88,6 @@ class  StockInSerializer(serializers.ModelSerializer):
 
             "created_by",
 
-            
-
             "created_at"
 
         ]    
@@ -131,7 +129,7 @@ class  StockOutSerializer(serializers.ModelSerializer):
 
 class StockSerializer(serializers.ModelSerializer):
     supplier_name=serializers.CharField(source="supplier.name",read_only=True)
-
+    expiry_date=serializers.SerializerMethodField()
     class Meta:
         model=Product
         fields=[
@@ -144,10 +142,16 @@ class StockSerializer(serializers.ModelSerializer):
             "selling_price",
             "stock",
             "minimum_stock",
-            "expiry_date"
-
-
+        
         ]
+
+        def get_expiry_date(self,obj):
+            stock=obj.stock_entries.order_by("expiry_date").first()
+
+            if stock:
+                return stock.expiry_date
+
+            return None
 
 class ProductBarcodeSerializer(serializers.ModelSerializer):
     
