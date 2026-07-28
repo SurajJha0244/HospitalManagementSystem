@@ -212,4 +212,42 @@ class OrganizationUserDetailAPIView(APIView):
         user.delete()
 
         return Response({"message":"User deleted sucessfully"})
-     
+
+class UserProfileAPIView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    # view own profile 
+
+    def get(self,request):
+
+        serializer = UserProfileSerializer(
+            request.user
+        )
+
+        return Response(
+            serializer.data
+        )
+
+        #update own profile
+
+        def put(self ,request):
+
+            serializer = UserProfileSerializer(
+                request.user,
+                data=request.data,
+                partial=True
+            )
+
+            serializer.is_valid(
+                raise_exception=True
+            )
+
+            serializer.save()
+
+            return Response(
+                serializer.data
+            )
+
