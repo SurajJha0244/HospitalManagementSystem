@@ -33,16 +33,11 @@ class ProductSerializer(serializers.ModelSerializer):
 
             "category",
 
-
-            "selling_price",
-
             "stock",
 
             "minimum_stock",
 
             "barcode",
-
-            "expiry_date",
 
             "manufacturer",
 
