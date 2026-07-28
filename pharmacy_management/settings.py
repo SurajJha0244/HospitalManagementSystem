@@ -32,13 +32,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'rest_framework',
     'accounts',
     'organizations',
@@ -183,7 +183,6 @@ SIMPLE_JWT = {
     True,
 
 }
-
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
