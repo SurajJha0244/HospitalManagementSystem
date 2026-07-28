@@ -111,3 +111,19 @@ class StaffUserSerializer(serializers.ModelSerializer):
                "phone",
                "role"
           ]
+
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    organization = serializers.CharField(source="organization.name",read_only=True)
+
+    class Meta:
+       model = User
+       fields = [
+           "username","first_name","last_name","email","phone","role","organization",
+       ]
+
+       read_only_fields = [
+        "username",
+        "role",
+        "organization",
+       ]
