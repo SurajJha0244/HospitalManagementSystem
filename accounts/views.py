@@ -13,6 +13,7 @@ from accounts.permissions import IsSuperAdminOrOrganizationAdmin
 
 from .models import User
 from django.shortcuts import get_object_or_404
+from .serializers import ChangePasswordSerializer
 
 
 
@@ -171,7 +172,7 @@ class OrganizationUserListAPIView(APIView):
 
         else:
 
-            users=User.objects.filter(organization=user.organization)  
+            users=User.objects.filter(organization=user.organization).exclude(role=User.Role.ORGANIZATION_ADMIN)  
 
         serializer =UserSerializer(users,many=True)   
 
@@ -212,4 +213,33 @@ class OrganizationUserDetailAPIView(APIView):
         user.delete()
 
         return Response({"message":"User deleted sucessfully"})
+
+
+
+class ChangePasswordAPIView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self,request):
+        serializer=ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=request.user
+
+        if not user.check_password(
+            serializer.validated_data["old_password"]):
+
+            return Response({
+                "old_password":["Current password is incorrect."]
+            },status=status.HTTP_400_BAD_REQUEST)
+
+
+        user.set_password(serializer.validated_data["new_password"])
+
+        user.save()
+
+        return Response(
+            {
+                "message":"Password changed sucessfully"
+            }
+        )
+
      
