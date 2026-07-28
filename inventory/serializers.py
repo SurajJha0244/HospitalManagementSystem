@@ -66,10 +66,18 @@ class ProductSerializer(serializers.ModelSerializer):
 
         ]
         read_only_fields=[
+        
             "stock",
             "created_at",
             "updated_at"
         ]
+        def validate_supplier(self,supplier):
+            request=self.context.get("request")
+
+            if request:
+                if supplier.organization!=request.user.organization:
+
+                    raise serializers.ValidateError("You cannot use supplier from another organization.")
 
 class  StockInSerializer(serializers.ModelSerializer):
     product_name=serializers.CharField(source="product.name",read_only=True)
@@ -156,5 +164,27 @@ class StockSerializer(serializers.ModelSerializer):
             "minimum_stock",
             "expiry_date"
 
+
+        ]
+
+class ProductBarcodeSerializer(serializers.ModelSerializer):
+    supplier_name=serializers.CharField(source="supplier.name",read_only=True)
+
+    class Meta:
+        model=Product
+
+        fields=[
+
+            "id",
+            "barcode",
+            "product_code",
+            "name",
+            "generic_name",
+            "category",
+            "supplier_name",
+            "selling_price",
+            "stock",
+            "batch_number",
+            "expiry_date",
 
         ]
