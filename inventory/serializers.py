@@ -149,12 +149,10 @@ class StockSerializer(serializers.ModelSerializer):
             "product_code",
             "barcode",
             "name",
-            "category",
-            "supplier_name",
+            "category", 
             "selling_price",
             "stock",
             "minimum_stock",
-            "expiry_date"
 
 
         ]
