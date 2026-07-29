@@ -56,11 +56,15 @@ class IsSuperAdminOrOrganizationAdmin(BasePermission):
                 User.Role.ORGANIZATION_ADMIN
 
             ]
+        )
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         )
 
+=======
+>>>>>>> 00fd26aee58aabaa7df6a3c7d240e91c3c059d73
 # Only Pharmacist
 class IsPharmacist(BasePermission):
 
@@ -130,6 +134,9 @@ class CanManageUsers(BasePermission):
                 User.Role.ORGANIZATION_ADMIN
 
             ]
+<<<<<<< HEAD
 
 >>>>>>> 34afa3d9007df5222a391197710bff38719b08a4
+=======
+>>>>>>> 00fd26aee58aabaa7df6a3c7d240e91c3c059d73
         )

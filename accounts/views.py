@@ -17,10 +17,6 @@ from .serializers import ChangePasswordSerializer
 
 
 
-
-
-
-
 class LoginAPIView(APIView):
 
     permission_classes=[]
